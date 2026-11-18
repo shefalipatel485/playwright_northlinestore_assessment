@@ -1,0 +1,43 @@
+{
+  "app": {
+    "base_url": "https://ecomcicid.netlify.app",
+    "products_path": "/products",
+    "cart_path": "/cart",
+    "checkout_path": "/checkout",
+    "expected_title": "Northline Store"
+  },
+  "api": {
+    "base_url": "https://681444af225ff1af16285b31.mockapi.io/electronicapi",
+    "max_response_time_sec": 3.0,
+    "required_fields": [
+      "id",
+      "name",
+      "price",
+      "brand",
+      "category",
+      "rating",
+      "stock"
+    ]
+  },
+  "search_queries": {
+    "valid": ["Headphones", "Skullcandy", "Sony", "Watch", "Laptop"],
+    "invalid": ["xyzunknownproduct987", "nonexistentitem0000"]
+  },
+  "viewports": {
+    "desktop": {
+      "width": 1366,
+      "height": 768
+    },
+    "tablet": {
+      "width": 768,
+      "height": 1024
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  "shipping": {
+    "free_shipping_threshold": 100
+  }
+}

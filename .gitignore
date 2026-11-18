@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Pytest & Playwright artifacts
+.pytest_cache/
+reports/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Environment
+.env

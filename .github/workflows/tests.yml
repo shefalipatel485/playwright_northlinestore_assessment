@@ -1,0 +1,77 @@
+name: Northline Store Playwright CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+jobs:
+  api-tests:
+    name: API & Schema Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run API Suite
+        run: |
+          mkdir -p reports
+          pytest tests/api -m api --html=reports/api_report.html --self-contained-html
+
+      - name: Upload API Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: reports/api_report.html
+
+  e2e-tests:
+    name: E2E Tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright Browser
+        run: playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run E2E & Responsive Suite
+        run: |
+          mkdir -p reports test-results
+          pytest tests/e2e             --browser ${{ matrix.browser }}             --tracing retain-on-failure             --screenshot only-on-failure             --output test-results             --html=reports/e2e_${{ matrix.browser }}_report.html             --self-contained-html
+
+      - name: Upload E2E Report, Screenshots & Traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-artifacts-${{ matrix.browser }}
+          path: |
+            reports/
+            test-results/
